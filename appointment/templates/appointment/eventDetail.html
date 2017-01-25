@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block title %}
+    Participate Event
+{% endblock %}
+
+{% block content %}
+
+    <p>Event name: {{ event.title }}</p>
+    <p>Event starter: {{ event.starter }}</p>
+    <p>Event description: {{ event.description }}</p>
+
+    <form id='event_form' name='event_form' action="{% url 'add-participant' event.id %}" method="POST" role="form">
+    {% csrf_token %}
+       {{ form }}
+        <div class='form-group'>
+            <input class='btn btn-default' type="submit" class="button" value="Participate">
+        </div>
+    </form>
+
+    {% if user.is_authenticated %}
+        <div class='form-group'>
+            <a class='btn btn-default' href="{% url 'event-add-day' event.id %}">Add new Time</a>
+        </div>
+    {% endif %}
+
+    {% if part %}
+        <h4>Participants list:</h4>
+        <table>
+    <tr>
+        <th>Name</th>
+        <th>Email</th>
+    </tr>
+    {% for item in part %}
+    <tr>
+        <td> {{ item.name }} </td>
+        <td> {{ item.email }} </td>
+        </tr>
+    {% endfor %}
+    {% endif %}
+
+    {% endblock %}
+{% block javascript %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <script type="text/javascript">
+      $(document).ready(function(){
+          $('input[type=radio][name=eventDate]').change(function(){
+        eventDate_id = $(this).val();
+        request_url = '/appointment/get_event_time/' + eventDate_id + '/';
+        $.ajax({
+            url: request_url,
+            success: function(data){
+                var obj = JSON.parse(data);
+
+                $('#id_eventTime').html("");
+                for(var key in obj){
+                   if (obj.hasOwnProperty(key)){
+                       var value=obj[key];
+                       var rdb = "<div class='radio'><label><input id='id_eventTime_" + key + "'" + "name='eventTime' type='radio' value='" + key + "'" + " />" + value + "</label></div>";
+                       $('#id_eventTime').append(rdb);
+                    }
+                }
+            }
+
+        });
+    })
+
+    });
+</script>
+{% endblock %}

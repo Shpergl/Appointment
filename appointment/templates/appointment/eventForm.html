@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block title %}
+    Create Event
+{% endblock %}
+
+{% block content %}
+
+    <form action="{% url 'event-save' %}" method="POST">
+    {% csrf_token %}
+    {{ form }}
+
+        <div class='form-group'>
+            <input type="submit" class="button" value="Create Event">
+        </div>
+    </form>
+
+{% endblock %}

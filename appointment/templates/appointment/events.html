@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Event list
+{% endblock %}
+
+{% block content %}
+
+    <h1> Event List:</h1>
+    {% for event in events %}
+        <h4><a href="{% url 'event-detail' event.id %}"> "{{ event.title }}".  Starter : {{ event.starter }}</a></h4>
+        <p> {{ event.get_cut }}</p>
+      {% endfor %}
+    {% if user.is_authenticated %}
+        <a class='btn btn-default' href="{% url 'event-add' %}">Create Event</a>
+    {% endif %}
+{% endblock %}
